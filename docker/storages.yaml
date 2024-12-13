@@ -1,14 +1,4 @@
 services:
-  redis:
-    image: redis:latest
-    container_name: redis_container
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    networks:
-      - backend
-
   postgres:
     image: postgres:15
     container_name: postgres_container
@@ -16,7 +6,6 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    command: ["postgres", "-c", "timezone=UTC"]
     networks:
       - backend
 
@@ -26,6 +15,4 @@ networks:
 
 volumes:
   postgres_data:
-    driver: local
-  redis_data:
     driver: local

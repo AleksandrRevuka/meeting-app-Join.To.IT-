@@ -15,7 +15,7 @@ class Driver(StrEnum):
 
 
 class DatabaseConfig(BaseSettings):
-    DATABASE_DIALECT: Dialect = Dialect.postgresql
+    DATABASE_DIALECT: Dialect = Dialect.sqlite
 
     DATABASE_HOST: str = ""
     DATABASE_PORT: int = 5432
@@ -30,7 +30,17 @@ class DatabaseConfig(BaseSettings):
 
     @property
     def GET_ASYNC_DB_URL(self) -> str:
-        database_url = f"{database_config.DATABASE_DIALECT}+{Driver.asyncpg}://{database_config.DATABASE_USER}:{database_config.DATABASE_PASSWORD}@{database_config.DATABASE_HOST}:{database_config.DATABASE_PORT}/{database_config.DATABASE_NAME}"
+        if self.DATABASE_DIALECT == Dialect.sqlite:
+            database_url = (
+                f"{self.DATABASE_DIALECT}+{Driver.aiosqlite}:///{self.DATABASE_NAME}"
+            )
+        else:
+            database_url = (
+                f"{self.DATABASE_DIALECT}+{Driver.asyncpg}://"
+                f"{self.DATABASE_USER}:{self.DATABASE_PASSWORD}@"
+                f"{self.DATABASE_HOST}:{self.DATABASE_PORT}/"
+                f"{self.DATABASE_NAME}"
+            )
         return database_url
 
 

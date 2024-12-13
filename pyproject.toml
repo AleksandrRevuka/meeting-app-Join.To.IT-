@@ -11,10 +11,17 @@ dependency-injector = "^4.44.0"
 fastapi = "^0.115.6"
 uvicorn = "^0.32.1"
 pydantic-settings = "^2.6.1"
-pydantic = "^2.10.3"
+pydantic = {extras = ["email"], version = "^2.10.3"}
 sqlalchemy = "^2.0.36"
 asyncpg = "^0.30.0"
+aiosqlite = "^0.20.0"
+passlib = "^1.7.4"
+python-jose = "^3.3.0"
+python-multipart = "^0.0.19"
 
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.13.0"
 
 [build-system]
 requires = ["poetry-core"]

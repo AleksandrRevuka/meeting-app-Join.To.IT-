@@ -12,8 +12,8 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-from src.config import database_config as db_config
-from src.orm import SqlAlchemyBase
+from src.adapters.orm import SqlAlchemyBase
+from src.config.db_config import database_config as db_config
 
 
 class AsyncDatabaseSQLAlchemyManager:
