@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "meeting-app"
+version = "0.1.0"
+description = ""
+authors = ["Alex Revuka <a.revuka@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+dependency-injector = "^4.44.0"
+fastapi = "^0.115.6"
+uvicorn = "^0.32.1"
+pydantic-settings = "^2.6.1"
+pydantic = "^2.10.3"
+sqlalchemy = "^2.0.36"
+asyncpg = "^0.30.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,22 @@
+services:
+  platforma:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+    container_name: platforma
+    ports:
+      - "8000:8000"
+    command: "uvicorn src.main:app --reload --use-colors --host 0.0.0.0 --port 8000"
+    env_file:
+      - ../.env
+    # environment:
+    #   - SQLALCHEMY_DATABASE_URL=postgresql+asyncpg://postgres:567234@postgres:5432/platforma17
+    #   - SCHEDULER_STORE_URL=postgresql+psycopg2://postgres:567234@postgres:5432/platforma17
+    volumes:
+      - ../:/app/
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
