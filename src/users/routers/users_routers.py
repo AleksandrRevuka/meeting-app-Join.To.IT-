@@ -43,6 +43,9 @@ async def update_master(
     body: UserUpdate,
     users_service: UsersService = Depends(Provide(Container.users_service)),
 ) -> UserResponse:
+    """
+    ## Update User Account
+    """
     user: UserResponse = await users_service.update_user(user_id, body)
     return user
 

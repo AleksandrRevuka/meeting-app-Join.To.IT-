@@ -67,49 +67,38 @@ class AsyncRepository(Generic[ModelType, SchemaType]):
 
     async def get_all(
         self,
-        schema_override: type[SchemaType] | None = None,
         **filter_by: Any,
     ) -> list[SchemaType]:
         """
         Fetch all entities and validate them against the specified schema.
-        :param schema_override: Optional Pydantic schema to override the default.
         """
-        schema = schema_override or self.schema
         stmt = select(self.model).filter_by(**filter_by)
         result = await self.session.execute(stmt)
         entities = result.scalars().all()
-        return [schema.model_validate(entity.__dict__) for entity in entities]
+        return [self.schema.model_validate(entity.__dict__) for entity in entities]
 
     async def add_one(
         self,
         data: BaseModel | dict[str, Any],
-        schema_override: type[SchemaType] | None = None,
     ) -> SchemaType:
         """
         Add a new entity to the database. Accepts Pydantic model or dict as input.
-        :param data: Pydantic model or dictionary containing data for the new entity.
-        :param schema_override: Optional Pydantic schema for validation after insertion.
         """
-        schema = schema_override or self.schema
         data = data if isinstance(data, dict) else data.model_dump()
 
         stmt = insert(self.model).values(**data).returning(self.model)
         result = await self.session.execute(stmt)
         entity = result.scalar_one()
-        return schema.model_validate(entity.__dict__)
+        return self.schema.model_validate(entity.__dict__)
 
     async def update_one(
         self,
         data: BaseModel | dict[str, Any],
-        schema_override: type[SchemaType] | None = None,
         **filter_by: Any,
     ) -> SchemaType:
         """
         Update an entity based on filter criteria.
-        :param data: Pydantic model or dictionary containing updated data.
-        :param schema_override: Optional Pydantic schema for validation after update.
         """
-        schema = schema_override or self.schema
         data = data if isinstance(data, dict) else data.model_dump()
 
         stmt = (
@@ -120,7 +109,7 @@ class AsyncRepository(Generic[ModelType, SchemaType]):
         )
         result = await self.session.execute(stmt)
         entity = result.scalar_one()
-        return schema.model_validate(entity.__dict__)
+        return self.schema.model_validate(entity.__dict__)
 
     async def delete_one(
         self,

@@ -77,7 +77,7 @@ async def create_event(
     current_user: PrivateUser = Depends(auth_service.get_current_user),
 ) -> EventResponse:
     """
-    ## Sign up a new user.
+    ## Create a new event.
     """
     if current_user.role == Role.organizer:
         new_event: PrivateUser = await events_service.create_event(body, current_user.user_id)
