@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, BackgroundTasks, Depends, Request, status
 from dependency_injector.wiring import Provide, inject
+from src.adapters.email import send_event_registration_email
 from src.common.security import security_service as auth_service
 from src.events.schemas import CreateEventRegistration, EventRegistrationResponse
 from src.users.schemas import PrivateUser
@@ -45,13 +46,22 @@ async def get_registrations(
 @inject
 async def create_registration(
     body: CreateEventRegistration,
+    background_tasks: BackgroundTasks,
+    request: Request,
     events_service: EventsService = Depends(Provide(Container.events_service)),
     current_user: PrivateUser = Depends(auth_service.get_current_user),
 ) -> EventRegistrationResponse:
     """
     ## Create a registration
     """
-    registration = await events_service.create_registration(body, current_user.user_id)
+    registration, event = await events_service.create_registration(body, current_user.user_id)
+    background_tasks.add_task(
+        send_event_registration_email,
+        current_user.email,
+        event.title,
+        event.event_date,
+        str(request.base_url),
+    )
     return registration
 
 

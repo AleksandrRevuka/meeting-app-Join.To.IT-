@@ -23,6 +23,12 @@ DATABASE_DIALECT=sqlite  # Options: sqlite or postgresql
 
 # Application secret key (replace with a strong, unique key)
 SECRET_KEY=your_secret_key
+
+MAIL_USERNAME=your_username
+MAIL_PASSWORD=your_email_password
+MAIL_FROM=your_email
+MAIL_PORT=465
+MAIL_SERVER=your_smtp.server
 ```
 
 ### Notes on `DATABASE_DIALECT`

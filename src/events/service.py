@@ -62,7 +62,7 @@ class EventsService:
 
     async def create_registration(
         self, body: CreateEventRegistration, user_id: uuid.UUID
-    ) -> EventRegistrationModel:
+    ) -> tuple[EventRegistrationModel, EventModel]:
         async with self.uow:
             event = await self.uow.events.get_one(event_id=body.event_id)
             if event is None:
@@ -78,7 +78,10 @@ class EventsService:
             data["user_id"] = user_id
             registration = await self.uow.registrations.add_one(data)
             await self.uow.commit()
-            return registration
+            event = await self.uow.events.get_one(event_id=registration.event_id)
+            if event is None:
+                raise event_err.EventNotFoundError()
+            return registration, event
 
     async def delete_registration(
         self, registration_id: int, user_id: uuid.UUID
