@@ -10,6 +10,7 @@ from fastapi.security import (
 )
 from starlette.responses import HTMLResponse, RedirectResponse
 
+from src.adapters.orm import Role
 from src.container import Container
 
 from src.users.auth_service import AuthUsersService

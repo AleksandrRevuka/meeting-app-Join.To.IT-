@@ -6,13 +6,26 @@ from fastapi import APIRouter, FastAPI
 
 from src.config.db_config import database_config as db_config
 from src.container import Container
+from src.events.exceptions.event_exc_handler import event_exception_handler
+from src.events.routers import event_routers, event_reg_routers
+from src.users.exceptions.auth_exc_handler import auth_exception_handler
+from src.users.exceptions.user_exc_handler import user_exception_handler
 from src.users.routers.auth_routers import public_router
 from src.users.routers.users_routers import user_router
-from src.users.exceptions.user_exc_handler import user_exception_handler
-from src.users.exceptions.auth_exc_handler import auth_exception_handler
 
-exception_handlers = [user_exception_handler, auth_exception_handler]
+exception_handlers = [
+    user_exception_handler,
+    auth_exception_handler,
+    event_exception_handler,
+]
 
+routers = [
+    public_router,
+    user_router,
+    event_routers.public_router,
+    event_routers.organizer_router,
+    event_reg_routers.user_router,
+]
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
@@ -42,8 +55,8 @@ router = APIRouter()
 for handler in exception_handlers:
     handler(app)
 
-app.include_router(public_router)
-app.include_router(user_router)
+for router in routers:
+    app.include_router(router)
 
 
 if __name__ == "__main__":

@@ -17,14 +17,7 @@ def auth_exception_handler(
     app: FastAPI,
 ) -> Callable[[Request, Exception], Coroutine[Any, Any, JSONResponse]]:
     @app.exception_handler(auth_err.InvalidPasswordError)
-    @app.exception_handler(auth_err.EmailNotConfirmedError)
     @app.exception_handler(auth_err.UserNotFoundUnAuthorizedError)
-    @app.exception_handler(auth_err.InvalidRefreshTokenError)
-    @app.exception_handler(auth_err.InvalidTokenError)
-    @app.exception_handler(auth_err.PasswordsNotMatchingError)
-    @app.exception_handler(auth_err.EmailAlreadyConfirmedError)
-    @app.exception_handler(auth_err.InvalidResetPasswordTokenError)
-    @app.exception_handler(auth_err.ForbiddenError)
     async def custom_exception_handler(request: Request, exc: Exception) -> JSONResponse:
         """
         Header for catching special exceptions
@@ -32,14 +25,7 @@ def auth_exception_handler(
         """
         exception_status_map = {
             auth_err.InvalidPasswordError: 401,
-            auth_err.EmailNotConfirmedError: 401,
             auth_err.UserNotFoundUnAuthorizedError: 401,
-            auth_err.InvalidRefreshTokenError: 401,
-            auth_err.InvalidTokenError: 403,
-            auth_err.PasswordsNotMatchingError: 400,
-            auth_err.EmailAlreadyConfirmedError: 400,
-            auth_err.InvalidResetPasswordTokenError: 403,
-            auth_err.ForbiddenError: 403,
         }
 
         status_code = exception_status_map.get(type(exc), 500)

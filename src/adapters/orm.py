@@ -20,5 +20,5 @@ class SqlAlchemyBase(DeclarativeBase):
 
 
 class Role(enum.Enum):
-    admin: str = "admin"
+    organizer: str = "organizer"
     user: str = "user"

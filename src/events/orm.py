@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from datetime import date
+from datetime import datetime
 from sqlalchemy import UUID, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -14,7 +14,7 @@ class Event(SqlAlchemyBase):
     event_id: Mapped[int] = mapped_column(primary_key=True, index=True)
     title: Mapped[str] = mapped_column(String(255))
     description: Mapped[str | None] = mapped_column(String(255))
-    event_date: Mapped[date] = mapped_column()
+    event_date: Mapped[datetime] = mapped_column()
     location: Mapped[str] = mapped_column(String(255))
     organizer: Mapped[str] = mapped_column(String(100))
     author_id: Mapped[UUID] = mapped_column(ForeignKey("users.user_id"))

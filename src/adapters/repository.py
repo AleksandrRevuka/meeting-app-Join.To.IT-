@@ -20,7 +20,11 @@ class IRepository(ABC):
     """
 
     @abstractmethod
-    async def get_all(self, schema_override: Any | None) -> list[Any]: ...
+    async def get_all(
+        self,
+        schema_override: Any | None,
+        **filter_by: Any,
+    ) -> list[Any]: ...
 
     @abstractmethod
     async def add_one(
@@ -62,14 +66,16 @@ class AsyncRepository(Generic[ModelType, SchemaType]):
         self.session = session
 
     async def get_all(
-        self, schema_override: type[SchemaType] | None = None
+        self,
+        schema_override: type[SchemaType] | None = None,
+        **filter_by: Any,
     ) -> list[SchemaType]:
         """
         Fetch all entities and validate them against the specified schema.
         :param schema_override: Optional Pydantic schema to override the default.
         """
         schema = schema_override or self.schema
-        stmt = select(self.model)
+        stmt = select(self.model).filter_by(**filter_by)
         result = await self.session.execute(stmt)
         entities = result.scalars().all()
         return [schema.model_validate(entity.__dict__) for entity in entities]

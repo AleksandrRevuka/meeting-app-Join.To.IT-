@@ -5,25 +5,25 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
 from src.common.schemas import ErrorResponse
-from src.users.exceptions import user_exceptions as user_err
+from src.events.exceptions import event_exceptions as event_err
 from src.users.exceptions.auth_exc_handler import exc_name
 
 
-def user_exception_handler(
+def event_exception_handler(
     app: FastAPI,
 ) -> Callable[[Request, Exception], Coroutine[Any, Any, JSONResponse]]:
-    @app.exception_handler(user_err.UserWithEmailAlreadyExistsError)
-    @app.exception_handler(user_err.UserWithPhoneAlreadyExistsError)
-    @app.exception_handler(user_err.UserNotFoundError)
+    @app.exception_handler(event_err.ForbiddenError)
+    @app.exception_handler(event_err.EventNotFoundError)
+    @app.exception_handler(event_err.RegistrationAlreadyExistsError)
     async def custom_exception_handler(request: Request, exc: Exception) -> JSONResponse:
         """
         Header for catching special exceptions
         and forming a single response for the user.
         """
         exception_status_map = {
-            user_err.UserWithEmailAlreadyExistsError: 409,
-            user_err.UserWithPhoneAlreadyExistsError: 409,
-            user_err.UserNotFoundError: 404,
+            event_err.EventNotFoundError: 404,
+            event_err.ForbiddenError: 403,
+            event_err.RegistrationAlreadyExistsError: 400,
         }
 
         status_code = exception_status_map.get(type(exc), 500)

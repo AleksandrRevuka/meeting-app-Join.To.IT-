@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, status
 
 from src.common.security import security_service as auth_service
 from src.container import Container
-from src.users.schemas import PrivateUser, UserResponse
+from src.users.schemas import PrivateUser, UserResponse, UserUpdate
 from src.users.service import UsersService
 
 user_router = APIRouter(prefix="/users", tags=["Users: Profile"])
@@ -30,6 +30,20 @@ async def read_me(
     user: UserResponse = await users_service.get_user_by_id(
             user_id=current_user.user_id
         )
+    return user
+
+
+@user_router.put(
+    "/{user_id}",
+    response_model=UserResponse,
+)
+@inject
+async def update_master(
+    user_id: uuid.UUID,
+    body: UserUpdate,
+    users_service: UsersService = Depends(Provide(Container.users_service)),
+) -> UserResponse:
+    user: UserResponse = await users_service.update_user(user_id, body)
     return user
 
 

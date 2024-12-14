@@ -13,5 +13,5 @@ class EventsStorageUnitOfWork(AsyncSqlAlchemyUnitOfWork):
     async def __aenter__(self) -> Self:
         uow = await super().__aenter__()
         self.events = EventsRepository(session=self.session)
-        self.events_registration = EventsRegistrationRepository(session=self.session)
+        self.registrations = EventsRegistrationRepository(session=self.session)
         return uow

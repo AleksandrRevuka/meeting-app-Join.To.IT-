@@ -1,5 +1,6 @@
 from dependency_injector import containers, providers
 
+from src.events.service import EventsService
 from src.events.uow import EventsStorageUnitOfWork
 from src.adapters.db.db_manager import AsyncDatabaseSQLAlchemyManager
 from src.config.db_config import database_config as db_config
@@ -11,6 +12,7 @@ class Container(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(
         packages=[
             "src.users.routers",
+            "src.events.routers",
         ],
         modules=[
             "src.common.security",
@@ -37,4 +39,8 @@ class Container(containers.DeclarativeContainer):
     users_service = providers.Factory(
         UsersService,
         uow=users_storege_unit_of_work,
+    )
+    events_service = providers.Factory(
+        EventsService,
+        uow=events_storege_unit_of_work,
     )
